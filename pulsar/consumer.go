@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"github.com/apache/pulsar-client-go/pulsar"
+	"goprojs/metrics/prometheus"
 	"log"
 	"time"
 )
@@ -38,6 +39,7 @@ func ListenAndServe() {
 			fmt.Println("error " + err.Error())
 			continue
 		}
+		prometheus.IncrementCounter(msg.Topic(), "HandleMessage")
 		w.HandleMessage(msg.Topic())
 		err = consumer.Ack(msg)
 		if err != nil {
